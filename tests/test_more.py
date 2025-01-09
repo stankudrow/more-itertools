@@ -530,7 +530,6 @@ class DistinctPermutationsTests(TestCase):
 
 
 class DerangementsTests(TestCase):
-
     RANGE_NUM = 8
 
     def test_range_manual(self):
@@ -553,9 +552,9 @@ class DerangementsTests(TestCase):
         range_in = range(self.RANGE_NUM)
         actual = set(mi.derangements(range_in))
         expected = {
-                x
-                for x in permutations(range_in)
-                if not any(x[i] == i for i in range_in)
+            x
+            for x in permutations(range_in)
+            if not any(x[i] == i for i in range_in)
         }
         self.assertSetEqual(actual, expected)
 
@@ -563,9 +562,9 @@ class DerangementsTests(TestCase):
         list_in = list(range(self.RANGE_NUM))
         actual = set(mi.derangements(list_in))
         expected = {
-                x
-                for x in permutations(list_in)
-                if not any(x[i] == i for i in list_in)
+            x
+            for x in permutations(list_in)
+            if not any(x[i] == i for i in list_in)
         }
         self.assertSetEqual(actual, expected)
 
@@ -573,9 +572,9 @@ class DerangementsTests(TestCase):
         tuple_in = tuple(range(self.RANGE_NUM))
         actual = set(mi.derangements(tuple_in))
         expected = {
-                x
-                for x in permutations(tuple_in)
-                if not any(x[i] == i for i in tuple_in)
+            x
+            for x in permutations(tuple_in)
+            if not any(x[i] == i for i in tuple_in)
         }
         self.assertSetEqual(actual, expected)
 
@@ -583,9 +582,9 @@ class DerangementsTests(TestCase):
         set_in = set(range(self.RANGE_NUM))
         actual = set(mi.derangements(set_in))
         expected = {
-                x
-                for x in permutations(set_in)
-                if not any(x[i] == i for i in range(self.RANGE_NUM))
+            x
+            for x in permutations(set_in)
+            if not any(x[i] == i for i in range(self.RANGE_NUM))
         }
         self.assertSetEqual(actual, expected)
 
@@ -593,9 +592,9 @@ class DerangementsTests(TestCase):
         list_in = list(mi.sieve(20))  # [2, 3, 5, 7, 11, 13, 17, 19]
         actual = set(mi.derangements(list_in))
         expected = {
-                x
-                for x in permutations(list_in)
-                if not any(k == i for i, k in enumerate(x))
+            x
+            for x in permutations(list_in)
+            if not any(k == i for i, k in enumerate(x))
         }
         self.assertSetEqual(actual, expected)
 
@@ -643,9 +642,9 @@ class DerangementsTests(TestCase):
         list_in = [True, 1, 0, False]
         actual = set(mi.derangements(list_in))
         expected = {
-                x
-                for x in permutations(list_in)
-                if not any(k == i for i, k in enumerate(x))
+            x
+            for x in permutations(list_in)
+            if not any(k == i for i, k in enumerate(x))
         }
         self.assertSetEqual(actual, expected)
 
@@ -681,7 +680,6 @@ class DerangementsTests(TestCase):
 
 
 class DistinctDerangementsTests(TestCase):
-
     RANGE_NUM = 8
 
     def test_list_manual(self):
@@ -694,9 +692,9 @@ class DistinctDerangementsTests(TestCase):
         range_in = range(self.RANGE_NUM)
         actual = set(mi.distinct_derangements(range_in))
         expected = {
-                x
-                for x in permutations(range_in)
-                if not any(x[i] == i for i in range_in)
+            x
+            for x in permutations(range_in)
+            if not any(x[i] == i for i in range_in)
         }
         self.assertSetEqual(actual, expected)
 
@@ -704,9 +702,9 @@ class DistinctDerangementsTests(TestCase):
         list_in = list(range(self.RANGE_NUM))
         actual = set(mi.distinct_derangements(list_in))
         expected = {
-                x
-                for x in permutations(list_in)
-                if not any(x[i] == i for i in list_in)
+            x
+            for x in permutations(list_in)
+            if not any(x[i] == i for i in list_in)
         }
         self.assertSetEqual(actual, expected)
 
@@ -714,9 +712,9 @@ class DistinctDerangementsTests(TestCase):
         tuple_in = tuple(range(self.RANGE_NUM))
         actual = set(mi.distinct_derangements(tuple_in))
         expected = {
-                x
-                for x in permutations(tuple_in)
-                if not any(x[i] == i for i in tuple_in)
+            x
+            for x in permutations(tuple_in)
+            if not any(x[i] == i for i in tuple_in)
         }
         self.assertSetEqual(actual, expected)
 
@@ -724,9 +722,9 @@ class DistinctDerangementsTests(TestCase):
         set_in = set(range(self.RANGE_NUM))
         actual = set(mi.distinct_derangements(set_in))
         expected = {
-                x
-                for x in permutations(set_in)
-                if not any(x[i] == i for i in range(self.RANGE_NUM))
+            x
+            for x in permutations(set_in)
+            if not any(x[i] == i for i in range(self.RANGE_NUM))
         }
         self.assertSetEqual(actual, expected)
 
@@ -734,9 +732,9 @@ class DistinctDerangementsTests(TestCase):
         list_in = list(mi.sieve(20))  # [2, 3, 5, 7, 11, 13, 17, 19]
         actual = set(mi.distinct_derangements(list_in))
         expected = {
-                x
-                for x in permutations(list_in)
-                if not any(k == i for i, k in enumerate(x))
+            x
+            for x in permutations(list_in)
+            if not any(k == i for i, k in enumerate(x))
         }
         self.assertSetEqual(actual, expected)
 
@@ -745,9 +743,9 @@ class DistinctDerangementsTests(TestCase):
         actual = sorted(mi.distinct_derangements(list_in))
         expected = sorted(
             {
-                    x
-                    for x in permutations(list_in)
-                    if not any(k == i for i, k in enumerate(x))
+                x
+                for x in permutations(list_in)
+                if not any(k == i for i, k in enumerate(x))
             }
         )
         self.assertListEqual(actual, expected)
@@ -778,9 +776,9 @@ class DistinctDerangementsTests(TestCase):
         list_in = [True, 1, 0, False]
         actual = set(mi.distinct_derangements(list_in))
         expected = {
-                x
-                for x in mi.distinct_permutations(list_in)
-                if not any(k == i for i, k in enumerate(x))
+            x
+            for x in mi.distinct_permutations(list_in)
+            if not any(k == i for i, k in enumerate(x))
         }
         self.assertSetEqual(actual, expected)
 
@@ -4406,7 +4404,7 @@ class FilterExceptTests(TestCase):
             list(mi.filter_except(int, iterable))
 
     def test_raise(self):
-        iterable = ['0', '1' '2', 'three', None]
+        iterable = ['0', '12', 'three', None]
         with self.assertRaises(TypeError):
             list(mi.filter_except(int, iterable, ValueError))
 
@@ -4438,7 +4436,7 @@ class MapExceptTests(TestCase):
             list(mi.map_except(int, iterable))
 
     def test_raise(self):
-        iterable = ['0', '1' '2', 'three', None]
+        iterable = ['0', '12', 'three', None]
         with self.assertRaises(TypeError):
             list(mi.map_except(int, iterable, ValueError))
 
