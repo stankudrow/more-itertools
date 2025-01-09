@@ -9,6 +9,7 @@ requirements:
 .PHONY: check
 check:
 	ruff check .
+	ruff format --check .
 	stubtest more_itertools.more more_itertools.recipes
 
 .PHONY: format
