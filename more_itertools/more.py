@@ -1,7 +1,6 @@
 import math
 import warnings
-
-from collections import Counter, defaultdict, deque, abc
+from collections import Counter, abc, defaultdict, deque
 from collections.abc import Sequence
 from contextlib import suppress
 from functools import cached_property, partial, reduce, wraps
@@ -16,24 +15,26 @@ from itertools import (
     groupby,
     islice,
     permutations,
+    product,
     repeat,
     starmap,
     takewhile,
     tee,
     zip_longest,
-    product,
 )
 from math import comb, e, exp, factorial, floor, fsum, log, log1p, perm, tau
+from operator import gt, itemgetter, lt, mul, sub
 from queue import Empty, Queue
 from random import random, randrange, shuffle, uniform
-from operator import itemgetter, mul, sub, gt, lt
 from sys import hexversion, maxsize
 from time import monotonic
 
 from .recipes import (
+    UnequalIterablesError,
     _marker,
     _zip_equal,
-    UnequalIterablesError,
+    all_equal,
+    batched,
     consume,
     flatten,
     nth,
@@ -41,8 +42,6 @@ from .recipes import (
     sieve,
     take,
     unique_everseen,
-    all_equal,
-    batched,
 )
 
 __all__ = [
@@ -574,8 +573,9 @@ def one(iterable, too_short=None, too_long=None):
         pass
     else:
         msg = (
-            'Expected exactly one item in iterable, but got {!r}, {!r}, '
-            'and perhaps more.'.format(first_value, second_value)
+            f'Expected exactly one item in iterable, '
+            f'but got {first_value!r}, {second_value!r}, '
+            'and perhaps more.'
         )
         raise too_long or ValueError(msg)
 
@@ -636,13 +636,13 @@ def strictly_n(iterable, n, too_short=None, too_long=None):
     if too_short is None:
         too_short = lambda item_count: raise_(
             ValueError,
-            'Too few items in iterable (got {})'.format(item_count),
+            f'Too few items in iterable (got {item_count})',
         )
 
     if too_long is None:
         too_long = lambda item_count: raise_(
             ValueError,
-            'Too many items in iterable (got at least {})'.format(item_count),
+            f'Too many items in iterable (got at least {item_count})',
         )
 
     it = iter(iterable)
@@ -1450,7 +1450,7 @@ def sliced(seq, n, strict=False):
         def ret():
             for _slice in iterator:
                 if len(_slice) != n:
-                    raise ValueError("seq is not divisible by n.")
+                    raise ValueError('seq is not divisible by n.')
                 yield _slice
 
         return iter(ret())
@@ -2250,13 +2250,11 @@ class numeric_range(abc.Sequence, abc.Hashable):
             self._start, self._stop, self._step = args
         elif argc == 0:
             raise TypeError(
-                'numeric_range expected at least '
-                '1 argument, got {}'.format(argc)
+                f'numeric_range expected at least 1 argument, got {argc}'
             )
         else:
             raise TypeError(
-                'numeric_range expected at most '
-                '3 arguments, got {}'.format(argc)
+                f'numeric_range expected at most 3 arguments, got {argc}'
             )
 
         self._zero = type(self._step)(0)
@@ -2319,7 +2317,7 @@ class numeric_range(abc.Sequence, abc.Hashable):
         else:
             raise TypeError(
                 'numeric range indices must be '
-                'integers or slices, not {}'.format(type(key).__name__)
+                f'integers or slices, not {type(key).__name__}'
             )
 
     def __hash__(self):
@@ -2360,12 +2358,11 @@ class numeric_range(abc.Sequence, abc.Hashable):
 
     def __repr__(self):
         if self._step == 1:
-            return "numeric_range({}, {})".format(
-                repr(self._start), repr(self._stop)
-            )
+            return f'numeric_range({self._start!r}, {self._stop!r})'
         else:
-            return "numeric_range({}, {}, {})".format(
-                repr(self._start), repr(self._stop), repr(self._step)
+            return (
+                f'numeric_range({self._start!r}, '
+                f'{self._stop!r}, {self._step!r})'
             )
 
     def __reversed__(self):
@@ -2390,13 +2387,13 @@ class numeric_range(abc.Sequence, abc.Hashable):
                 if r == self._zero:
                     return int(q)
 
-        raise ValueError("{} is not in numeric range".format(value))
+        raise ValueError(f'{value} is not in numeric range')
 
     def _get_by_index(self, i):
         if i < 0:
             i += self._len
         if i < 0 or i >= self._len:
-            raise IndexError("numeric range object index out of range")
+            raise IndexError('numeric range object index out of range')
         return self._start + i * self._step
 
 
@@ -2649,7 +2646,7 @@ def _islice_helper(it, s):
             if n <= 0:
                 return
 
-            for index, item in islice(cache, 0, n, step):
+            for index, item in islice(cache, 0, n, step):  # noqa: B007
                 yield item
         elif (stop is not None) and (stop < 0):
             # Advance to the start position
@@ -2684,7 +2681,7 @@ def _islice_helper(it, s):
             else:
                 i, j = min(start - len_iter, -1), None
 
-            for index, item in list(cache)[i:j:step]:
+            for index, item in list(cache)[i:j:step]:  # noqa: B007
                 yield item
         else:
             # Advance to the stop position
@@ -2774,7 +2771,7 @@ def consecutive_groups(iterable, ordering=lambda x: x):
         [[1, 2], [11, 12], [21, 22]]
 
     """
-    for k, g in groupby(
+    for _k, g in groupby(
         enumerate(iterable), key=lambda x: x[0] - ordering(x[1])
     ):
         yield map(itemgetter(1), g)
@@ -2864,7 +2861,7 @@ class SequenceView(Sequence):
         return len(self._target)
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, repr(self._target))
+        return f'{self.__class__.__name__}({self._target!r})'
 
 
 class seekable:
@@ -3526,8 +3523,9 @@ def only(iterable, default=None, too_long=None):
         pass
     else:
         msg = (
-            'Expected exactly one item in iterable, but got {!r}, {!r}, '
-            'and perhaps more.'.format(first_value, second_value)
+            'Expected exactly one item in iterable, '
+            f'but got {first_value!r}, {second_value!r}, '
+            'and perhaps more.'
         )
         raise too_long or ValueError(msg)
 
@@ -4559,7 +4557,7 @@ def zip_broadcast(*objects, scalar_types=(str, bytes), strict=False):
 
     zipper = _zip_equal if strict else zip
     for item in zipper(*iterables):
-        for i, new_item[i] in zip(iterable_positions, item):
+        for i, new_item[i] in zip(iterable_positions, item):  # noqa: B007
             pass
         yield tuple(new_item)
 
@@ -4830,7 +4828,7 @@ def gray_product(*iterables):
     iterable_count = len(all_iterables)
     for iterable in all_iterables:
         if len(iterable) < 2:
-            raise ValueError("each iterable must have two or more items")
+            raise ValueError('each iterable must have two or more items')
 
     # This is based on "Algorithm H" from section 7.2.1.1, page 20.
     # a holds the indexes of the source iterables for the n-tuple to be yielded
